@@ -1,6 +1,6 @@
 ---
 title: "TO404HW1_Final"
-author: "Danielle Bidigare"
+author: "Danielle Bidigare, in partnership with Jeffrey Sondheimer"
 date: "11/1/2020"
 output: html_document
 ---
@@ -54,14 +54,14 @@ shortest_flight
 jan_12_2013_UAFlights <- nrow(nyc[nyc$carrier=="UA" & nyc$year==2013 & nyc$month==1 & nyc$day==12,])
 jan_12_2013_UAFlights
 ```
-**One January 12th, 2013, there were `r jan_12_2013_UAFlights` United Airlines flights.**
+**On January 12th, 2013, there were `r jan_12_2013_UAFlights` United Airlines flights.**
 
 ## Arrival Delay
 
 ### What was the average arrival delay for all airports and all airlines combined in Jan 2013?
 
 ```{r}
-average_arrival_delay_Jan2013 <- mean(nyc$arr_delay[nyc$year==2013 & nyc$month==1], na.rm=TRUE)
+average_arrival_delay_Jan2013 <- round(mean(nyc$arr_delay[nyc$year==2013 & nyc$month==1], na.rm=TRUE),2)
 average_arrival_delay_Jan2013
 ```
 **The average arrival delay for all airports and all airlines combined in January 2013 is `r average_arrival_delay_Jan2013` minutes.**
@@ -132,7 +132,7 @@ sort(avg_airgain_by_airline)
 best_airgain <- head(sort(names(avg_airgain_by_airline)))
 worst_airgain <- tail(sort(names(avg_airgain_by_airline)))
 ```
-**`r best_airgain` are the airlines did the best job gaining airtime, while `r worst_airgain` are the airlines that did the worst job gaining airtime.**
+**`r best_airgain` are the airlines that did the best job gaining airtime, while `r worst_airgain` are the airlines that did the worst job gaining airtime.**
 
 Below is a barplot to depict the best and worst airlines for airgain:
 ```{r}
