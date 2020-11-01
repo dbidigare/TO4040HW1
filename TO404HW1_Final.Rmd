@@ -1,0 +1,141 @@
+---
+title: "TO404HW1_Final"
+author: "Danielle Bidigare"
+date: "11/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+nyc<- read.csv("nycflights.csv")
+```
+
+```{r}
+nyc$carrier <- as.factor(nyc$carrier)
+nyc$flight <- as.factor(nyc$flight)
+nyc$tailnum <- as.factor(nyc$tailnum)
+nyc$origin <- as.factor(nyc$origin)
+nyc$dest <- as.factor(nyc$dest)
+```
+
+## Data Exploration
+
+### How many airlines are there?
+
+```{r}
+total_num_airlines <- length(levels(nyc$carrier))
+total_num_airlines
+```
+
+**There are `r total_num_airlines` airlines**
+
+### How many flights there were by the airline with code `OO`?
+
+```{r}
+airline_code_OO <- nrow(nyc[nyc$airline == "OO",])
+airline_code_OO
+```
+**There are `r airline_code_OO` flights with the code OO.**
+
+### How long is the shortest flight out of any NYC airport?
+
+```{r}
+shortest_flight <- min(nyc$air_time, na.rm=TRUE)
+shortest_flight
+```
+**The shortest flight out of any NYC airport is `r shortest_flight` minutes.**
+
+### How many flights where there by United Airlines (code: UA) on Jan 12th 2013?
+
+```{r}
+jan_12_2013_UAFlights <- nrow(nyc[nyc$carrier=="UA" & nyc$year==2013 & nyc$month==1 & nyc$day==12,])
+jan_12_2013_UAFlights
+```
+**One January 12th, 2013, there were `r jan_12_2013_UAFlights` United Airlines flights.**
+
+## Arrival Delay
+
+### What was the average arrival delay for all airports and all airlines combined in Jan 2013?
+
+```{r}
+average_arrival_delay_Jan2013 <- mean(nyc$arr_delay[nyc$year==2013 & nyc$month==1], na.rm=TRUE)
+average_arrival_delay_Jan2013
+```
+**The average arrival delay for all airports and all airlines combined in January 2013 is `r average_arrival_delay_Jan2013` minutes.**
+
+### What was the median arrival delay for all airports and all airlines combined in Jan 2013?
+
+```{r}
+median_arrival_delay_Jan2013 <- median(nyc$arr_delay[nyc$year==2013 & nyc$month==1],na.rm=TRUE)
+median_arrival_delay_Jan2013
+```
+**The median arrival delay for all airports and all airlines combined in January 2013 was `r median_arrival_delay_Jan2013` minutes.**
+
+## Airline Performance 
+
+### Average arrival delays by airline
+
+```{r}
+average_arr_delay_airline <- round(tapply(nyc$arr_delay, nyc$carrier, mean, na.rm=TRUE), 2)
+average_arr_delay_airline
+sort(average_arr_delay_airline, decreasing = FALSE)
+```
+
+Barplot of these average arrival delays by airline:
+```{r}
+barplot(sort(average_arr_delay_airline, decreasing = FALSE), las=2)
+```
+
+### Which airline has the highest average arrival delay? Which airline has the smallest average arrival delay? Are there airlines that actually have negative average delay?
+
+```{r}
+highest_avg_airline_delay <- names(average_arr_delay_airline[average_arr_delay_airline==max(average_arr_delay_airline)])
+highest_avg_airline_delay
+
+smallest_avg_airline_delay <- names(average_arr_delay_airline[average_arr_delay_airline==min(average_arr_delay_airline)])
+smallest_avg_airline_delay
+
+negative_avg_airline_delay <- names(average_arr_delay_airline[average_arr_delay_airline<0])
+negative_avg_airline_delay
+```
+
+**`r highest_avg_airline_delay` has the highest average arrival delay, and `r smallest_avg_airline_delay` has the smallest average arrival delay. `r negative_avg_airline_delay` have negative average airlines delays.**
+
+## Air Gain
+
+The following is a histogram of airgain:
+```{r}
+nyc$airgain <- nyc$dep_delay-nyc$arr_delay
+summary(nyc$airgain)
+mean(nyc$airgain, na.rm=TRUE)
+median(nyc$airgain, na.rm=TRUE)
+str(nyc$airgain)
+hist(nyc$airgain)
+```
+
+### Do airlines actually gain any time when in air on average?
+
+```{r}
+average_airgain <- round(mean(nyc$airgain, na.rm=TRUE),2)
+average_airgain
+```
+**On average, airlines gain `r average_airgain` minutes in air.** 
+
+### Average airgain for different airlines:
+
+```{r}
+avg_airgain_by_airline <- round(tapply(nyc$airgain,nyc$carrier,mean,na.rm=TRUE),2)
+sort(avg_airgain_by_airline)
+best_airgain <- head(sort(names(avg_airgain_by_airline)))
+worst_airgain <- tail(sort(names(avg_airgain_by_airline)))
+```
+**`r best_airgain` are the airlines did the best job gaining airtime, while `r worst_airgain` are the airlines that did the worst job gaining airtime.**
+
+Below is a barplot to depict the best and worst airlines for airgain:
+```{r}
+barplot(sort(avg_airgain_by_airline, decreasing = FALSE),las=2)
+```
+
